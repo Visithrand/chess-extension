@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Chess Engine Assistant",
+  "version": "1.0",
+  "description": "Real-time chess analysis using Stockfish",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "https://www.chess.com/*",
+    "https://lichess.org/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.chess.com/*",
+        "https://lichess.org/*"
+      ],
+      "js": [
+        "lib/chess.js",
+        "content/boardReader.js",
+        "content/highlighter.js",
+        "content/autoplay.js",
+        "content/content.js"
+      ],
+      "css": ["ui/panel.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "engine/stockfish.js",
+        "engine/stockfish.wasm"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
