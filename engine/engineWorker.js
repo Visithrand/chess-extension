@@ -1,9 +1,22 @@
 // ================================
-// Stockfish Worker (MV3 SAFE)
+// engineWorker.js (PAGE CONTEXT)
 // ================================
-const stockfish = new Worker(
-  chrome.runtime.getURL("engine/stockfish.js")
-);
+console.log("♟️ engineWorker.js running");
+
+// ================================
+// Get Stockfish URL from content.js
+// ================================
+const STOCKFISH_URL = window.__STOCKFISH_ENGINE_URL__;
+
+if (!STOCKFISH_URL) {
+  console.error("❌ Stockfish URL not found");
+  return;
+}
+
+// ================================
+// Create Stockfish Worker
+// ================================
+const stockfish = new Worker(STOCKFISH_URL);
 
 let engineReady = false;
 let busy = false;
@@ -16,14 +29,18 @@ stockfish.postMessage("uci");
 stockfish.onmessage = (e) => {
   const line = e.data;
 
+  // Uncomment if you want raw engine logs
+  // console.log("[SF]", line);
+
   if (line === "uciok") {
     stockfish.postMessage("isready");
   }
 
   if (line === "readyok") {
     engineReady = true;
+    console.log("♟️ Stockfish ready");
 
-    // Engine strength settings
+    // Engine strength
     stockfish.postMessage("setoption name Threads value 4");
     stockfish.postMessage("setoption name Hash value 128");
   }
@@ -32,6 +49,8 @@ stockfish.onmessage = (e) => {
     busy = false;
 
     const move = line.split(" ")[1];
+    console.log("♟️ Best move:", move);
+
     window.postMessage(
       {
         type: "BEST_MOVE",
@@ -54,6 +73,6 @@ window.addEventListener("message", (e) => {
   stockfish.postMessage("stop");
   stockfish.postMessage("position fen " + e.data.fen);
 
-  // 🔥 Strong & stable analysis
+  // Stable & strong
   stockfish.postMessage("go movetime 1500");
 });
