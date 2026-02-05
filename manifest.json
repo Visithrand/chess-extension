@@ -18,15 +18,16 @@
         "lib/chess.js",
         "content/boardReader.js",
         "content/highlighter.js",
-        "content/autoplay.js",
         "content/content.js"
       ],
-      "css": ["ui/panel.css"]
+      "css": ["ui/panel.css"],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
+        "engine/engineWorker.js",
         "engine/stockfish.js",
         "engine/stockfish.wasm"
       ],
